@@ -1,0 +1,68 @@
+# Vercel Serverless Flask API
+import os
+import sqlite3
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+DB_PATH = os.path.join(os.path.dirname(__file__), 'students.db')
+
+# 每次 cold start 自动初始化数据库（仅适合演示）
+def init_db():
+    if not os.path.exists(DB_PATH):
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE scores (
+            id TEXT PRIMARY KEY,
+            score INTEGER
+        )''')
+        c.executemany('INSERT INTO scores (id, score) VALUES (?, ?)', [
+            ("202301", 95),
+            ("202302", 88),
+            ("202303", 76),
+            ("202304", 100)
+        ])
+        conn.commit()
+        conn.close()
+
+init_db()
+
+@app.route('/score', methods=['GET'])
+def get_score():
+    student_id = request.args.get('id')
+    if not student_id:
+        return jsonify({"error": "缺少学号参数"}), 400
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT score FROM scores WHERE id=?', (student_id,))
+    row = c.fetchone()
+    conn.close()
+    if row:
+        return jsonify({"id": student_id, "score": row[0]})
+    else:
+        return jsonify({"error": "未找到该学号"}), 404
+
+@app.route('/score', methods=['POST'])
+def add_or_update_score():
+    data = request.get_json()
+    student_id = data.get('id')
+    score = data.get('score')
+    if not student_id or score is None:
+        return jsonify({"error": "参数缺失"}), 400
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT score FROM scores WHERE id=?', (student_id,))
+    if c.fetchone():
+        c.execute('UPDATE scores SET score=? WHERE id=?', (score, student_id))
+        msg = "成绩已更新"
+    else:
+        c.execute('INSERT INTO scores (id, score) VALUES (?, ?)', (student_id, score))
+        msg = "成绩已添加"
+    conn.commit()
+    conn.close()
+    return jsonify({"id": student_id, "score": score, "msg": msg})
+
+# Vercel Serverless 必须暴露 app 变量
+handler = app
