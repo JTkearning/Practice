@@ -10,7 +10,6 @@ import os
 app = Flask(__name__, static_folder='../frontend', static_url_path='/static')
 CORS(app)
 
-import os
 DB_PATH = os.path.join(os.path.dirname(__file__), 'students.db')
 
 # 确保数据库存在，但不重置已有数据
@@ -82,6 +81,11 @@ def index():
 @app.route('/<path:filename>')
 def static_files(filename):
 	return send_from_directory('../', filename)
+
+# 健康检查端点
+@app.route('/health')
+def health_check():
+	return jsonify({"status": "healthy", "version": "2.0"}), 200
 
 if __name__ == '__main__':
 	app.run(debug=True)
