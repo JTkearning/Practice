@@ -13,6 +13,29 @@ CORS(app)
 import os
 DB_PATH = os.path.join(os.path.dirname(__file__), 'students.db')
 
+# 确保数据库存在，但不重置已有数据
+def ensure_db_exists():
+    if not os.path.exists(DB_PATH):
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE scores (
+            id TEXT PRIMARY KEY,
+            score INTEGER
+        )''')
+        # 只在首次创建时插入初始数据
+        c.executemany('INSERT INTO scores (id, score) VALUES (?, ?)', [
+            ("202301", 95),
+            ("202302", 88),
+            ("202303", 76),
+            ("202304", 100)
+        ])
+        conn.commit()
+        conn.close()
+        print('数据库初始化完成')
+
+# 应用启动时确保数据库存在
+ensure_db_exists()
+
 # 查询成绩
 @app.route('/score', methods=['GET'])
 def get_score():
