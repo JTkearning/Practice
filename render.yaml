@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: student-score-backend
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+  startCommand: "gunicorn backend.app:app"
+    autoDeploy: true
+    plan: free
+    # 如果主程序在 backend 目录下，可加 rootDir: backend
+    # rootDir: backend
