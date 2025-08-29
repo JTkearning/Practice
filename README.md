@@ -10,10 +10,18 @@
 - frontend/script.js：前端交互脚本
 
 ## 本地启动方法
-1. 安装 Flask 及依赖：`pip install flask flask-cors`
-2. 初始化数据库：`python backend/init_db.py`
-3. 运行后端：`python backend/app.py`
+1. 安装 Flask 及依赖：`pip3 install --break-system-packages flask flask-cors`
+2. 初始化数据库：`python3 backend/init_db.py`
+3. 运行后端：`python3 backend/app.py`
 4. 用浏览器打开 `frontend/index.html`，输入学号查询分数或添加/修改成绩
+
+## 已修复的问题
+- ✅ 修复了backend/app.py中的重复import语句
+- ✅ 增强了前端的错误处理和用户体验
+- ✅ 添加了加载状态显示和分数验证
+- ✅ 改进了API端点配置，支持本地和生产环境
+- ✅ 增强了后端的输入验证和错误处理
+- ✅ 优化了界面样式，支持按钮禁用状态
 
 ## Vercel 部署方法
 1. 将项目推送到 GitHub

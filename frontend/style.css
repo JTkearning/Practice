@@ -25,9 +25,15 @@ button {
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
+	transition: background-color 0.2s ease;
 }
-button:hover {
+button:hover:not(:disabled) {
 	background: #0056b3;
+}
+button:disabled {
+	background: #6c757d;
+	cursor: not-allowed;
+	opacity: 0.7;
 }
 #result {
 	margin-top: 18px;
