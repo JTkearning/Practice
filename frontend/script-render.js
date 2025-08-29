@@ -1,6 +1,5 @@
 
-
-// 给“查询分数”按钮绑定点击事件
+// 给"查询分数"按钮绑定点击事件
 document.getElementById('searchBtn').onclick = function() {
 	const id = document.getElementById('studentId').value.trim();
 	const resultDiv = document.getElementById('result');
@@ -8,7 +7,7 @@ document.getElementById('searchBtn').onclick = function() {
 		resultDiv.textContent = '请输入学号';
 		return;
 	}
-	fetch(`/api/score?id=${id}`)
+	fetch(`/score?id=${id}`)
 		.then(res => res.json())
 		.then(data => {
 			if (data.score !== undefined) {
@@ -22,7 +21,7 @@ document.getElementById('searchBtn').onclick = function() {
 		});
 };
 
-// 给“添加/修改成绩”按钮绑定点击事件
+// 给"添加/修改成绩"按钮绑定点击事件
 document.getElementById('addBtn').onclick = function() {
 	// 获取输入的学号和分数
 	const id = document.getElementById('addId').value.trim();
@@ -36,7 +35,7 @@ document.getElementById('addBtn').onclick = function() {
 	}
 
 	// 发送 POST 请求到后端，添加或修改成绩
-	fetch('/api/score', {
+	fetch('/score', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'

@@ -1,12 +1,13 @@
 # 学生成绩查询系统后端
 
 # 学生成绩查询系统后端（数据库版）
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import os
 
-app = Flask(__name__)
+# 设置静态文件目录
+app = Flask(__name__, static_folder='../frontend', static_url_path='/static')
 CORS(app)
 
 import os
@@ -49,6 +50,15 @@ def add_or_update_score():
 	conn.commit()
 	conn.close()
 	return jsonify({"id": student_id, "score": score, "msg": msg})
+
+# 静态文件路由
+@app.route('/')
+def index():
+	return send_from_directory('../', 'index-render.html')
+
+@app.route('/<path:filename>')
+def static_files(filename):
+	return send_from_directory('../', filename)
 
 if __name__ == '__main__':
 	app.run(debug=True)
